@@ -1,0 +1,88 @@
+<Window x:Class="WpfUserLoginManager.UserManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="用户管理"
+        Height="680"
+        Width="1040"
+        MinHeight="600"
+        MinWidth="960"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Icon="Assets/user-group.ico">
+    <Grid Background="{StaticResource AppBackgroundBrush}" MouseLeftButtonDown="WindowRoot_OnMouseLeftButtonDown">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Padding="24,18" Background="#080A0E" BorderBrush="#242C38" BorderThickness="0,0,0,1">
+            <DockPanel LastChildFill="False">
+                <StackPanel DockPanel.Dock="Left">
+                    <TextBlock Text="用户管理" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}" />
+                    <TextBlock Text="{Binding CurrentUser.UserName, StringFormat=当前登录：{0}}" Foreground="{StaticResource MutedTextBrush}" Margin="0,5,0,0" />
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button Content="刷新" Command="{Binding RefreshCommand}" Width="86" />
+                    <Button Content="退出" Width="86" Margin="10,0,0,0" Click="ExitButton_OnClick" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="22">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="18" />
+                <ColumnDefinition Width="260" />
+            </Grid.ColumnDefinitions>
+
+            <Border Background="{StaticResource PanelBrush}" BorderBrush="#29313D" BorderThickness="1" Padding="14">
+                <DataGrid ItemsSource="{Binding Users}"
+                          SelectedItem="{Binding SelectedUser, Mode=TwoWay}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          SelectionMode="Single"
+                          AlternationCount="2">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="序号" Binding="{Binding UserId}" Width="60" />
+                        <DataGridTextColumn Header="用户名" Binding="{Binding UserName}" Width="140" />
+                        <DataGridTextColumn Header="密码哈希" Binding="{Binding PasswordHash}" Width="180" />
+                        <DataGridTextColumn Header="等级" Binding="{Binding Level}" Width="60" />
+                        <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt, StringFormat=yyyy-MM-dd HH:mm:ss}" Width="145" />
+                        <DataGridTextColumn Header="最后登录时间" Binding="{Binding LastLoginAt, StringFormat=yyyy-MM-dd HH:mm:ss}" Width="145" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <Border Grid.Column="2" Background="{StaticResource PanelBrush}" BorderBrush="#29313D" BorderThickness="1" Padding="18">
+                <StackPanel>
+                    <TextBlock Text="设置" FontSize="19" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}" />
+                    <CheckBox Content="登录时需要密码"
+                              IsChecked="{Binding RequirePassword, Mode=TwoWay}"
+                              Foreground="{StaticResource TextBrush}"
+                              Margin="0,14,0,24" />
+
+                    <TextBlock Text="用户操作" FontSize="19" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}" />
+                    <Button Content="新增用户"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding AddCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                            Margin="0,14,0,0" />
+                    <Button Content="修改选中用户"
+                            Command="{Binding UpdateCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                            Margin="0,10,0,0" />
+                    <Button Content="删除选中用户" Command="{Binding DeleteCommand}" Margin="0,10,0,0" />
+
+                    <Border Height="1" Background="#29313D" Margin="0,24,0,20" />
+
+                    <TextBlock Text="查询" FontSize="19" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}" />
+                    <TextBlock Text="用户名或序号" Foreground="{StaticResource MutedTextBrush}" Margin="0,10,0,8" />
+                    <TextBox Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button Content="查询" Command="{Binding SearchCommand}" Margin="0,12,0,0" />
+                    <Button Content="清空" Command="{Binding ClearCommand}" Margin="0,10,0,0" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
